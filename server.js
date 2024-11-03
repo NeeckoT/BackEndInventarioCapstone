@@ -8,6 +8,7 @@ const cors = require('cors');
 const usuarios = require('./routes/usuarios');
 const medicamentos = require('./routes/medicamentos');
 const movimientos = require('./routes/movimientos');
+const loteMedicamento = require('./routes/loteMedicamento');
 
 // const options = {
 //     key: fs.readFileSync('server.key'),
@@ -35,6 +36,8 @@ app.get('/', (req, res) => {
 app.use('/api/usuarios', usuarios);
 app.use('/api/medicamentos', medicamentos);
 app.use('/api/movimientos', movimientos);
+app.use('/api/loteMedicamento', loteMedicamento);
+
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
