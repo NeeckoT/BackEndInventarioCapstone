@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const connection = require('../db');
+const {connection} = require('../db');
 
 function formatDateToYYYYMMDD(isoDate) {
     const date = new Date(isoDate);

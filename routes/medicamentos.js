@@ -1,14 +1,14 @@
 // usuarios.js
 const express = require('express');
 const router = express.Router();
-const connection = require('../db');
+const {connection} = require('../db');
 
 // Obtener todos los usuarios
 router.get('/', (req, res) => {
     connection.query(`
-        SELECT tm.*, tl.nombrelaboratorio, tu.descripcionunidadmedida FROM tbl_medicamento tm
-        inner join tbl_laboratorio tl on tl.idlaboratorio = tm.tbl_laboratorio_idlaboratorio
-        inner join tbl_unidadmedida tu on tu.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
+        SELECT tm.*, tl.descripcionlaboratorio, tu.descripcionunidadmedida FROM tbl_medicamento tm
+        join tbl_laboratorio tl on tl.idlaboratorio = tm.tbl_laboratorio_idlaboratorio
+        join tbl_unidadmedida tu on tu.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
         order by stockmedicamento desc, nombrecomercialmedicamento;`, (err, results) => {
         if (err) return res.status(500).send(err);
         res.json(results);
