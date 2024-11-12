@@ -6,8 +6,8 @@ router.get('/', (req, res) => {
     try {
         connection.query(`
             select * from tbl_medicamento tm
-            RIGHT join tbl_lote_medicamento tlm on tlm.tbl_medicamento_idmedicamento = tm.idmedicamento
-            order by tlm.fechavencimiento;
+            RIGHT join tbl_inventario ti on ti.tbl_medicamento_idmedicamento = tm.idmedicamento
+            order by ti.fechavencimientoinventario;
             `, (err, results) => {
             if (err) return res.status(500).send(err);
             res.json(results);
@@ -40,16 +40,16 @@ router.get('/unitario', async (req, res) => {
 });
 
 
-router.get('/busqueda',(req, res)=>{
+router.get('/busqueda', async (req, res)=>{
 
     const id = req.query.id;
 
     try {
-        pool.query(`
+        const [rows, fields] = await pool.query(`
             select * from tbl_medicamento tm
-            RIGHT join tbl_lote_medicamento tlm on tlm.tbl_medicamento_idmedicamento = tm.idmedicamento
+            RIGHT join tbl_inventario ti on ti.tbl_medicamento_idmedicamento = tm.idmedicamento
             where tm.idmedicamento = ?
-            order by tlm.fechavencimiento;`,
+            order by ti.fechavencimientoinventario;`,
             [id],
             (err, results) => {
                 if (err) {
@@ -60,11 +60,53 @@ router.get('/busqueda',(req, res)=>{
                     return res.status(404).json({ error: 'Medicamento no encontrado' });
                 }
             
-                return res.json(results); // Devuelve solo el primer resultado
         });
+        return res.json(rows); // Devuelve solo el primer resultado
     } catch (err) {
         
     }
 });
+
+
+
+router.post('/', async (req, res)=>{
+
+    const data = req.body;
+
+    console.log(data);
+
+    try {
+        const [rows, fields] = await pool.query(`
+            CALL sp_crear_inventario(
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+            )
+            `,
+            [data.lote, data.precio, data.cantidad, data.fechaVencimiento, data.medicamento, data.nroGuia],
+            (err, results) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({ error: 'Error en la base de datos' });
+                }
+                if (results.length === 0) {
+                    return res.status(404).json({ error: 'Medicamento no encontrado' });
+                }
+            
+            });
+            console.log(rows[0]);
+            console.log(fields);
+            return res.json(rows[0]);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error: " + err.message});
+    }
+});
+
+
+
 
 module.exports = router;

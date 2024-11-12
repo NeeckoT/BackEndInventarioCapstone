@@ -7,7 +7,6 @@ const {pool} = require('../db');
 router.get('/', async (req, res) => {
     try{
         const [rows, fields] = await pool.query(`SELECT * FROM tbl_guia;`);
-        console.log('Resultados del procedimiento almacenado:', rows);
         return res.status(201).json( rows );
     }catch(err){
         console.error('Error al ejecutar el procedimiento almacenado:', err);
@@ -30,21 +29,12 @@ router.post('/', async (req, res) => {
             ?,NOW(),1,?,?
             )
             `,[data.nroGuia, data.proveedorGuia, data.tipoGuia]);
-            console.log(rows.insertId);
+            console.log(rows);
         return res.json({ status: true, resultId: rows.insertId });        
     } catch (err) {
         console.error(err.message)
         return res.status(500).json({ status: false, error: err.message });
     }
-    // try{
-    //     const [rows, fields] = await pool.query(`SELECT * FROM tbl_guia;`);
-    //     console.log('Resultados del procedimiento almacenado:', rows);
-    //     return res.status(201).json( rows );
-    // }catch(err){
-    //     console.error('Error al ejecutar el procedimiento almacenado:', err);
-    //     pool.end();
-    //     return res.status(500).json({ status: false, error: err.message });
-    // }
 });
 
 
