@@ -42,11 +42,35 @@ router.get('/unitario', (req, res) => {
 
 // Crear un nuevo usuario
 router.post('/', (req, res) => {
-    const { nombre, email } = req.body;
-    connection.query('INSERT INTO usuarios (nombre, email) VALUES (?, ?)', [nombre, email], (err, results) => {
-        if (err) return res.status(500).send(err);
-        res.status(201).json({ id: results.insertId, nombre, email });
-    });
+    console.log(req.body);
+    try {
+        const { nombreMedicamento,
+            nombreCompuestoMedicamento,
+            cantidadPastillasMedicamento,
+            pesoPastillaMedicamento,
+            unidadMedidaMedicamento,
+            laboratorioMedicamento 
+            } = req.body;
+    const results = connection.query(`INSERT INTO tbl_medicamento (
+        nombrecomercialmedicamento,
+        nombrecompuestomedicamento,
+        pesopastillamedicamento,
+        cantidadpastillasmedicamentos,
+        tbl_unidadmedida_idunidadmedida,
+        tbl_laboratorio_idlaboratorio,
+        stockmedicamento,
+        activomedicamento
+        ) VALUES (?, ?, ?, ?, ?, ?, 0, 1)`, 
+        [nombreMedicamento,
+        nombreCompuestoMedicamento,
+        pesoPastillaMedicamento,
+        cantidadPastillasMedicamento,
+        unidadMedidaMedicamento,
+        laboratorioMedicamento ]);
+    console.log( results.status )
+    } catch (err) {
+        console.log(err.message);
+    }
+    
 });
-// Exporta el router
 module.exports = router;

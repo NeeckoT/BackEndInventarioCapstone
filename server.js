@@ -13,6 +13,8 @@ const boleta = require('./routes/boleta');
 const guia = require('./routes/guia');
 const proveedor = require('./routes/proveedor');
 const tipoguia = require('./routes/tipoGuia');
+const unidadMedida = require('./routes/unidadMedida');
+const laboratorio = require('./routes/laboratorio');
 
 
 // const options = {
@@ -46,6 +48,8 @@ app.use('/api/boleta', boleta);
 app.use('/api/guia', guia);
 app.use('/api/proveedor', proveedor);
 app.use('/api/tipoguia', tipoguia);
+app.use('/api/unidadMedida', unidadMedida);
+app.use('/api/laboratorio', laboratorio);
 
 
 app.listen(PORT, () => {

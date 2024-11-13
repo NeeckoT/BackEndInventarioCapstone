@@ -1,31 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const {pool} = require('../db');
 
 
 
 router.post('/crear', async (req, res) => {
 
 
-    const data = req.body
-    console.log(data)
-    const medicamentos = [
-        { idMedicamento: 1, cantidad: 2, tipoMovimiento: 2, idInventario: 1},
-        { idMedicamento: 1, cantidad: 1, tipoMovimiento: 2, idInventario: 1},
-    ];
-
-    const medicamentosJson = JSON.stringify(medicamentos);
-
-    try{
-
-        const results = await pool.query('CALL sp_creacion_recibo(?)', [medicamentosJson]);
-        console.log('Resultados del procedimiento almacenado:', results[0]);
-        return res.status(201).json({ status: true });
-
-    }catch(err){
-        console.error('Error al ejecutar el procedimiento almacenado:', err);
-        pool.end();
-        return res.status(500).json({ status: false, error: err.message });
+    const [data] = req.body
+    const { idmedicamento, idinventario, cantidad } = data
+    const postData = { idMedicamento: idmedicamento, idInventario: idinventario, cantidad: cantidad, tipoMovimiento: 2};
+    console.log(postData);
+    try {
+        const [rows] = await pool.query(
+            `CALL sp_creacion_recibo(?)`, 
+            [JSON.stringify(postData)]
+        );
+            console.log(rows[0]);
+            return res.json(rows[0]);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error: " + err.message});
     }
 });
 
