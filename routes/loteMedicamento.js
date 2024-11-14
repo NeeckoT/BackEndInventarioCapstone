@@ -48,8 +48,8 @@ router.get('/busqueda', async (req, res)=>{
         const [rows, fields] = await pool.query(`
             select * from tbl_medicamento tm
             RIGHT join tbl_inventario ti on ti.tbl_medicamento_idmedicamento = tm.idmedicamento
-            where tm.idmedicamento = ?
-            order by ti.fechavencimientoinventario;`,
+            where tm.idmedicamento = ? AND  ti.cantidadfinalinventario <> 0
+            order by ti.fechavencimientoinventario, ti.cantidadfinalinventario desc;`,
             [id],
             (err, results) => {
                 if (err) {
