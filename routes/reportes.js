@@ -35,6 +35,8 @@ router.get('/vencMedicamentos', async (req, res) => {
             SELECT * 
             FROM tbl_inventario ti
             INNER JOIN tbl_medicamento tm ON tm.idmedicamento = ti.idinventario
+            INNER JOIN tbl_unidadmedida tu on tu.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
+            INNER JOIN tbl_laboratorio tl on tl.idlaboratorio = tm.tbl_laboratorio_idlaboratorio
             WHERE fechavencimientoinventario between ? AND ?
             GROUP BY idmedicamento
             ORDER BY cantidadfinalinventario DESC;`, [fechaInicio, fechaFinal]);
