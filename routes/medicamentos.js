@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
         SELECT tm.*, tl.descripcionlaboratorio, tu.descripcionunidadmedida FROM tbl_medicamento tm
         join tbl_laboratorio tl on tl.idlaboratorio = tm.tbl_laboratorio_idlaboratorio
         join tbl_unidadmedida tu on tu.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
-        order by stockmedicamento desc, nombrecomercialmedicamento;`, (err, results) => {
+        order by nombrecomercialmedicamento, stockmedicamento desc;`, (err, results) => {
         if (err) return res.status(500).send(err);
         res.json(results);
     });
@@ -51,7 +51,7 @@ router.post('/', (req, res) => {
             unidadMedidaMedicamento,
             laboratorioMedicamento 
             } = req.body;
-    const results = connection.query(`INSERT INTO tbl_medicamento (
+        const results = connection.query(`INSERT INTO tbl_medicamento (
         nombrecomercialmedicamento,
         nombrecompuestomedicamento,
         pesopastillamedicamento,
@@ -67,10 +67,12 @@ router.post('/', (req, res) => {
         cantidadPastillasMedicamento,
         unidadMedidaMedicamento,
         laboratorioMedicamento ]);
-    console.log( results.status )
+        console.log( results.status )
     } catch (err) {
         console.log(err.message);
     }
     
 });
+
+
 module.exports = router;
