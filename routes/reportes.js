@@ -34,10 +34,9 @@ router.get('/vencMedicamentos', async (req, res) => {
         const [rows, fields] = await pool.query(`
             SELECT * 
             FROM tbl_inventario ti
-            INNER JOIN tbl_medicamento tm ON tm.idmedicamento = ti.idinventario
+            LEFT JOIN tbl_medicamento tm ON tm.idmedicamento = ti.idinventario
             WHERE fechavencimientoinventario between ? AND ?
-            GROUP BY idmedicamento
-            ORDER BY cantidadfinalinventario DESC;`, [fechaInicio, fechaFinal]);
+            ORDER BY fechavencimientoinventario, cantidadfinalinventario DESC;`, [fechaInicio, fechaFinal]);
         return res.json({ rows });
     } catch (err) {
         console.error(err);
