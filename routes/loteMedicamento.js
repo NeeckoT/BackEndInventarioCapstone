@@ -28,6 +28,7 @@ router.get('/unitario', async (req, res) => {
         const [rows, fields] = await pool.query(`
         SELECT * FROM tbl_inventario ti
         inner join tbl_medicamento tme ON tme.idmedicamento = ti.tbl_medicamento_idmedicamento
+        inner join tbl_unidadmedida tum ON tum.idunidadmedida = tme.tbl_unidadmedida_idunidadmedida
         WHERE ti.idinventario = ?;
         `, [id]);
         console.log(rows[0]);
