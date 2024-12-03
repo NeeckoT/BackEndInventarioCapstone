@@ -34,15 +34,29 @@ router.get('/vencMedicamentos', async (req, res) => {
         const [rows, fields] = await pool.query(`
             SELECT * 
             FROM tbl_inventario ti
-<<<<<<< HEAD
             INNER JOIN tbl_medicamento tm ON tm.idmedicamento = ti.idinventario
             INNER JOIN tbl_unidadmedida tu on tu.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
             INNER JOIN tbl_laboratorio tl on tl.idlaboratorio = tm.tbl_laboratorio_idlaboratorio
-=======
-            LEFT JOIN tbl_medicamento tm ON tm.idmedicamento = ti.idinventario
->>>>>>> a714b75254cc78251a729b0616948f1b41ede8dd
-            WHERE fechavencimientoinventario between ? AND ?
+            WHERE fechavencimientoinventario between '2024-12-01' AND '2025-01-31'
+            GROUP BY idmedicamento
             ORDER BY fechavencimientoinventario, cantidadfinalinventario DESC;`, [fechaInicio, fechaFinal]);
+        return res.json({ rows });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error en la base de datos' });
+    }
+});
+
+
+router.get('/Dashboard', async (req, res) => {
+    try {
+        const { fechaInicio, fechaFinal } = req.query;
+        const [rows, fields] = await pool.query(`
+            SELECT MONTH(fechavencimientoinventario) AS mes, SUM(cantidadfinalinventario) AS total_filas
+            FROM tbl_inventario
+            WHERE YEAR(fechavencimientoinventario) > YEAR(NOW())
+            GROUP BY MONTH(fechavencimientoinventario)
+            ORDER BY mes;`);
         return res.json({ rows });
     } catch (err) {
         console.error(err);

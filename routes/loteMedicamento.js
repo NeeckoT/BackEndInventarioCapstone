@@ -7,6 +7,7 @@ router.get('/', (req, res) => {
         connection.query(`
             select * from tbl_medicamento tm
             RIGHT join tbl_inventario ti on ti.tbl_medicamento_idmedicamento = tm.idmedicamento
+            RIGHT join tbl_unidadmedida tum on tum.idunidadmedida = tm.tbl_unidadmedida_idunidadmedida
             order by ti.fechavencimientoinventario;
             `, (err, results) => {
             if (err) return res.status(500).send(err);
